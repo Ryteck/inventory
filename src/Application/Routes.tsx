@@ -1,9 +1,9 @@
 import React from 'react';
 
+import Login from './../pages/Login'
+
 export default () => {
     return (
-        <div>
-            BUE
-        </div>
+        <Login/>
     )
 }

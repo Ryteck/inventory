@@ -1,0 +1,50 @@
+.login .box {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.login .box h1 {
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.login .box input {
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid;
+    padding: 14px 40px;
+    outline: none;
+    color: #ffffff;
+    border-radius: 24px;
+    transition: 0.25s;
+}
+
+.login .box input[type = 'text'], .login .box input[type = 'password']{
+    border-color: #8344ad;
+    width: 200px;
+}
+
+.login .box input[type = 'text']:focus, .login .box input[type = 'password']:focus{
+    border-color: #e84393;
+    width: 240px;
+}
+
+.login .box input[type = 'submit'], .login .box input[type = 'button'] {
+    border-color: #2ecc71;
+    width: 180px;
+    cursor: pointer;
+}
+
+.login .box input[type = 'submit']:hover, .login .box input[type = 'button']:hover {
+    background-color: #2ecc71;
+}
+
+.login .box form a {
+    text-decoration: none;
+}
