@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom'
 
 import './style.css';
 
@@ -11,7 +12,9 @@ export default () => {
                     <input type='text' name='username' placeholder='username'/>
                     <input type='password' name='password' placeholder='password'/>
                     <input type='submit' value='Login'/>
-                    <input type='button' value='Registro'/>
+                    <Link to='/register'>
+                        <input type='button' value='Registro'/>
+                    </Link>
                 </form>
             </div>
         </div>
