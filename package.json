@@ -1,7 +1,14 @@
 {
-  "name": "react-app",
+  "name": "inventory",
   "version": "0.1.0",
+  "description": "Inventory manager created with Typescript, React and Electron",
+  "author": "Ryan Gomes Martins",
+  "license": "MIT",
   "private": true,
+  "repository": {
+	"type": "git",
+	"url": "https://github.com/ryteck/inventory.git"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -20,9 +27,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
