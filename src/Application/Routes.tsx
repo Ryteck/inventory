@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Switch, Route} from 'react-router-dom'
+import {HashRouter, Switch, Route} from 'react-router-dom'
 
 import Login from './../templates/pages/Login'
 import Register from './../templates/pages/Register'
@@ -12,7 +12,7 @@ import Backup from './../templates/pages/Backup'
 
 export default () => {
     return (
-        <BrowserRouter>
+        <HashRouter>
             <Switch>
                 <Route component={Login} path='/' exact/>
                 <Route component={Register} path='/registro' exact/>
@@ -23,6 +23,6 @@ export default () => {
                 <Route component={Perfil} path='/perfil' exact/>
                 <Route component={Backup} path='/backup' exact/>
             </Switch>
-        </BrowserRouter>
+        </HashRouter>
     )
 }

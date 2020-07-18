@@ -10,24 +10,29 @@
     "url": "https://github.com/ryteck/inventory.git"
   },
   "dependencies": {
+    "electron-is-dev": "^1.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.5",
+    "concurrently": "^5.2.0",
+    "electron": "^9.1.0",
+    "electron-builder": "^22.7.0",
     "react-scripts": "3.4.1",
-    "serve": "^11.3.2",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "wait-on": "^5.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "web": "serve -s ./build"
+    "electron-dev": "concurrently \"yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-pack": "electron-builder --win --x64 -c.extraMetadata.main=./build/electron.js",
+    "preelectron-pack": "yarn build"
   },
   "browserslist": {
     "production": [
@@ -40,5 +45,21 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "main": "./public/electron.js",
+  "homepage": "./",
+  "build": {
+    "productName": "Inventory",
+    "appId": "com.ryteck.inventory",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "icon": "./build/icon.ico"
+    }
   }
 }

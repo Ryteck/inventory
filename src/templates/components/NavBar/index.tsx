@@ -34,7 +34,7 @@ export default ({home, estoque, entrada, saida, perfil, backup}: NavBarInterface
     }
 
     function logout() {
-        //clear data
+        // clear data
         redirect('/')
     }
 
