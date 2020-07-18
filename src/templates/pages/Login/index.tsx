@@ -11,8 +11,10 @@ export default () => {
                 <form>
                     <input type='text' name='username' placeholder='username'/>
                     <input type='password' name='password' placeholder='password'/>
-                    <input type='submit' value='Login'/>
-                    <Link to='/register'>
+                    <Link to='/home'>
+                        <input type='submit' value='Login'/>
+                    </Link>
+                    <Link to='/registro'>
                         <input type='button' value='Registro'/>
                     </Link>
                 </form>

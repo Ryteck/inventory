@@ -1,0 +1,16 @@
+.backup {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 10vh 90vh;
+    grid-template-areas: "header" "main";
+}
+
+.backup header {
+    grid-area: header;
+}
+
+.backup main {
+    grid-area: main;
+}

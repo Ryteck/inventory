@@ -1,0 +1,16 @@
+.saida {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 10vh 90vh;
+    grid-template-areas: "header" "main";
+}
+
+.saida header {
+    grid-area: header;
+}
+
+.saida main {
+    grid-area: main;
+}
