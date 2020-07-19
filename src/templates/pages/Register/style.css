@@ -44,7 +44,3 @@
 .register .box input[type = 'submit']:hover, .register .box input[type = 'button']:hover {
     background-color: #2ecc71;
 }
-
-.register .box form a {
-    text-decoration: none;
-}

@@ -1,9 +1,16 @@
-import React from 'react';
-import {Link} from "react-router-dom";
-
+import React, {useState} from 'react';
 import './style.css';
+import Redirect from "../../components/Redirect";
 
 export default () => {
+    const [redirectRender, setRedirectRender] = useState<boolean>(false);
+    const [redirectPath, setRedirectPath] = useState<string>('');
+
+    function redirect(path: string) {
+        setRedirectPath(path)
+        setRedirectRender(true)
+    }
+
     return (
         <div className='register'>
             <div className='box'>
@@ -14,11 +21,10 @@ export default () => {
                     <input type='password' name='password' placeholder='password'/>
                     <input type='password' name='password_confirm' placeholder='confirmar password'/>
                     <input type='submit' value='Registrar'/>
-                    <Link to='/'>
-                        <input type='button' value='Login'/>
-                    </Link>
+                    <input type='button' value='Login' onClick={() => redirect('/')}/>
                 </form>
             </div>
+            <Redirect render={redirectRender} path={redirectPath}/>
         </div>
     )
 }

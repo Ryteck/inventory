@@ -1,9 +1,8 @@
 import React, {useState} from "react";
-import {Redirect} from "react-router-dom";
-
 import './style.css'
+import Redirect from './../Redirect';
 
-interface NavBarInterface {
+interface NavBarPropsInterface {
     home?: boolean,
     estoque?: boolean,
     entrada?: boolean,
@@ -12,8 +11,8 @@ interface NavBarInterface {
     backup?: boolean
 }
 
-export default ({home, estoque, entrada, saida, perfil, backup}: NavBarInterface) => {
-    function classActivate(validator?:boolean): string {
+export default ({home, estoque, entrada, saida, perfil, backup}: NavBarPropsInterface) => {
+    function classActivate(validator?: boolean): string {
         if (validator) return 'activate'
         else return ''
     }
@@ -25,29 +24,36 @@ export default ({home, estoque, entrada, saida, perfil, backup}: NavBarInterface
     const perfilClass = classActivate(perfil)
     const backupClass = classActivate(backup)
 
-    const [redirectPath, setRedirectPath] = useState<string>('');
     const [redirectRender, setRedirectRender] = useState<boolean>(false);
+    const [redirectPath, setRedirectPath] = useState<string>('');
 
-    function redirect(path:string) {
+    function redirect(path: string) {
         setRedirectPath(path)
         setRedirectRender(true)
     }
 
     function logout() {
-        // clear data
+        sessionStorage.clear()
         redirect('/')
     }
 
     return (
         <div className="navbar">
             <button className={homeClass + ' select'} disabled={home} onClick={() => redirect('/home')}>Home</button>
-            <button className={estoqueClass + ' select'} disabled={estoque} onClick={() => redirect('/estoque')}>Estoque</button>
-            <button className={entradaClass + ' select'} disabled={entrada} onClick={() => redirect('/entrada')}>Entrada</button>
-            <button className={saidaClass + ' select'} disabled={saida} onClick={() => redirect('/saida')}>Saída</button>
-            <button className={perfilClass + ' select'} disabled={perfil} onClick={() => redirect('/perfil')}>Perfil</button>
-            <button className={backupClass + ' select'} disabled={backup} onClick={() => redirect('/backup')}>Backup</button>
+            <button className={estoqueClass + ' select'} disabled={estoque}
+                    onClick={() => redirect('/estoque')}>Estoque
+            </button>
+            <button className={entradaClass + ' select'} disabled={entrada}
+                    onClick={() => redirect('/entrada')}>Entrada
+            </button>
+            <button className={saidaClass + ' select'} disabled={saida} onClick={() => redirect('/saida')}>Saída
+            </button>
+            <button className={perfilClass + ' select'} disabled={perfil} onClick={() => redirect('/perfil')}>Perfil
+            </button>
+            <button className={backupClass + ' select'} disabled={backup} onClick={() => redirect('/backup')}>Backup
+            </button>
             <button onClick={() => logout()}>Sair</button>
-            {redirectRender ? <Redirect to={redirectPath}/> : null}
+            <Redirect render={redirectRender} path={redirectPath}/>
         </div>
     )
 }

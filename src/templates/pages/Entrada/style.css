@@ -13,4 +13,5 @@
 
 .entrada main {
     grid-area: main;
+    margin: 15px 200px;
 }

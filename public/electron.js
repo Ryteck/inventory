@@ -7,8 +7,8 @@ let mainWindow;
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 450,
+        width: 1600,
+        height: 900,
         icon: `${__dirname}/icon.png`,
         webPreferences: {
             nodeIntegration: true
@@ -16,6 +16,8 @@ const createWindow = () => {
     });
     mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '..', 'build', 'index.html')}`).then();
     mainWindow.on('closed', () => mainWindow = null);
+
+    mainWindow.webContents.openDevTools()
 }
 
 app.whenReady().then(() => {

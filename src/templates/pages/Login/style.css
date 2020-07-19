@@ -44,7 +44,3 @@
 .login .box input[type = 'submit']:hover, .login .box input[type = 'button']:hover {
     background-color: #2ecc71;
 }
-
-.login .box form a {
-    text-decoration: none;
-}
