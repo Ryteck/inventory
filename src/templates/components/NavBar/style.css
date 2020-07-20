@@ -13,10 +13,14 @@
     padding: 14px 40px;
     cursor: pointer;
     transition: 0.25s;
+    box-shadow: 0 0 5px 2px #ff4757,
+                inset 0 0 5px 2px #ff4757;
 }
 
 .navbar button:hover,  .navbar .activate {
     background-color: #ff4757;
+    box-shadow: 0 0 100px 2px #ff4757,
+        inset 0 0 5px 2px #ff4757;
 }
 
 .navbar .activate {

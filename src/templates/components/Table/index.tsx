@@ -45,7 +45,7 @@ export default ({title, collumns, data}: TablePropsInterface) => {
                             dataUpdate[index] = newData;
                             setTableData([...dataUpdate]);
                             resolve();
-                        });
+                        }, 1000);
                     }),
                     onRowDelete: oldData => new Promise<any>(resolve => {
                         setTimeout(() => {

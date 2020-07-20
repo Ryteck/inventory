@@ -32,7 +32,7 @@ export default ({home, estoque, entrada, saida, perfil, backup}: NavBarPropsInte
         setRedirectRender(true)
     }
 
-    function logout() {
+    async function logout() {
         sessionStorage.clear()
         redirect('/')
     }

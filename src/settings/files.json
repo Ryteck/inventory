@@ -1,0 +1,22 @@
+[
+  {
+    "dir": true,
+    "path": "/"
+  },
+  {
+    "name": "users",
+    "path": "/users.bue"
+  },
+  {
+    "name": "items",
+    "path": "/inventory.bue"
+  },
+  {
+    "name": "inputs",
+    "path": "/input.bue"
+  },
+  {
+    "name": "outputs",
+    "path": "/output.bue"
+  }
+]
