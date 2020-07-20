@@ -2,6 +2,11 @@ import React, {useState} from "react";
 import './style.css'
 import Redirect from './../Redirect';
 
+import tokenHelper from "../../../helpers/token";
+
+import TranslateTokenInterface from "../../../interfaces/translateTokenInterface";
+import TokenInterface from "../../../interfaces/tokenInterface";
+
 interface NavBarPropsInterface {
     home?: boolean,
     estoque?: boolean,
@@ -32,10 +37,30 @@ export default ({home, estoque, entrada, saida, perfil, backup}: NavBarPropsInte
         setRedirectRender(true)
     }
 
-    async function logout() {
+    function logout() {
         sessionStorage.clear()
         redirect('/')
     }
+
+    setTimeout(() => {
+        if (!sessionStorage.getItem('token')) {
+            logout()
+        } else {
+            const token = sessionStorage.getItem('token')
+            const id = sessionStorage.getItem('id')
+
+            const translateToken = tokenHelper.translateToken(token as string) as TranslateTokenInterface
+            if (translateToken.error) {
+                logout()
+            } else {
+                const data = translateToken.data as TokenInterface
+                if (data.secret.id.toString() !== id){
+                    logout()
+                }
+            }
+        }
+    }, 1000)
+
 
     return (
         <div className="navbar">

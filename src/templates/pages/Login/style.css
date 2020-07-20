@@ -52,3 +52,8 @@
     box-shadow: 0 0 100px 2px #2ecc71,
                 inset 0 0 5px 2px #2ecc71;
 }
+
+.login span {
+    display: block;
+    color: #ff4757;
+}

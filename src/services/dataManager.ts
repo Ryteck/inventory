@@ -17,8 +17,9 @@ const exists = (path: string, isDir?: boolean, name?: string) => {
 }
 
 const read = (path: string): string | false => {
+    const parsePath = basePath + path
     try {
-        return fs.readFileSync(path, option)
+        return fs.readFileSync(parsePath, option)
     } catch (error) {
         console.log(error)
         return false
@@ -26,8 +27,9 @@ const read = (path: string): string | false => {
 }
 
 const write = (path: string, data: string): boolean => {
+    const parsePath = basePath + path
     try {
-        fs.writeFileSync(path, data, option)
+        fs.writeFileSync(parsePath, data, option)
         return true;
     } catch (error) {
         console.log(error)

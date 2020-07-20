@@ -1,18 +1,10 @@
 import {JsonWebTokenError, NotBeforeError, sign, TokenExpiredError, verify} from 'jsonwebtoken'
 
+import TokenInterface from "../interfaces/tokenInterface";
+import TranslateTokenInterface from "../interfaces/translateTokenInterface";
+
 const ONEDAY = 86400;
 const HASH = 'bue';
-
-interface TokenInterface {
-    secret: {
-        id: string
-    }
-}
-
-interface TranslateTokenInterface {
-    error: JsonWebTokenError | NotBeforeError | TokenExpiredError | null,
-    data: object | undefined | TokenInterface
-}
 
 const generateToken = (data: TokenInterface): string => sign(data, HASH, {expiresIn: ONEDAY});
 
