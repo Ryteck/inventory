@@ -36,11 +36,12 @@ export default () => {
         const selectUser = notDisableUsers.find(value => value.username === username)
         if (selectUser) {
             if (passwordHelper.compare(password, selectUser.password as string)) {
-                const {id, name} = selectUser
+                const {id, name, username} = selectUser
                 const token = tokenHelper.generateToken({secret: {id}})
                 sessionStorage.setItem('token', token)
                 sessionStorage.setItem('id', id.toString())
                 sessionStorage.setItem('name', name)
+                sessionStorage.setItem('username', username as string)
                 redirect('/home')
             } else {
                 setDialogTitle("Error")

@@ -9,7 +9,8 @@ const index = (): UserJsonInterface => <UserJsonInterface>jsonConvert.toJSON(dat
 
 const show = (id: number) => {
     const {users} = index()
-    return users.find(value => value.id === id)
+    const userFinds = users.find(value => value.id === id)
+    return userFinds
 }
 
 const create = (name: string, username: string, password: string) => {
