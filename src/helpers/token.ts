@@ -1,4 +1,4 @@
-import {JsonWebTokenError, NotBeforeError, sign, TokenExpiredError, verify} from 'jsonwebtoken'
+import {sign, verify} from 'jsonwebtoken'
 
 import TokenInterface from "../interfaces/tokenInterface";
 import TranslateTokenInterface from "../interfaces/translateTokenInterface";

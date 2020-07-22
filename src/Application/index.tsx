@@ -1,7 +1,6 @@
 import React from 'react';
 import './style.css';
 import Routes from './Routes';
-
 import data from './../services/dataManager';
 import files from '../settings/files.json'
 

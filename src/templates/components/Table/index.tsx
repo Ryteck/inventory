@@ -2,19 +2,11 @@ import React, {useState} from "react";
 import MaterialTable, {Column} from "material-table";
 import Dialog from "../Dialog";
 
-interface FunctionSaveDataInterface {
-    (data: any): void
-}
-
-interface SpecialFunctionInterface {
-    (data: any, del: boolean, upd: any): boolean
-}
-
 interface TablePropsInterface {
     title: string,
     collumns: Column<any>[],
     data: object[],
-    save: FunctionSaveDataInterface,
+    save: { (data: any): void },
     noRepeat?: {
         camp: string,
         list: Array<any>,
@@ -22,7 +14,7 @@ interface TablePropsInterface {
     }
     requiredFields?: Array<string>,
     special?: {
-        func: SpecialFunctionInterface,
+        func: { (data: any, del: boolean, upd: any): boolean },
         message: string
     }
 }
@@ -32,6 +24,12 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>('');
     const [dialogText, setDialogText] = useState<string>('');
+
+    function openDialog(title: string, text: string) {
+        setDialogTitle(title)
+        setDialogText(text)
+        setDialogOpen(true)
+    }
 
     return (
         <div className='table'>
@@ -58,9 +56,7 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                             if (noRepeat) {
                                 const veifyCamp = newData[noRepeat.camp]
                                 if (noRepeat.list.find(value => value === veifyCamp)) {
-                                    setDialogTitle('ERROR')
-                                    setDialogText(noRepeat.message)
-                                    setDialogOpen(true)
+                                    openDialog('Error', noRepeat.message)
                                     reject()
                                     return
                                 }
@@ -70,17 +66,13 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                                     return true
                                 }
                             })) {
-                                setDialogTitle('ERROR')
-                                setDialogText('Campos nulos')
-                                setDialogOpen(true)
+                                openDialog('Error', 'Campos nulos')
                                 reject()
                                 return;
                             }
                             if (special) {
                                 if (special.func(newData, false, false)) {
-                                    setDialogTitle('ERROR')
-                                    setDialogText(special.message)
-                                    setDialogOpen(true)
+                                    openDialog('Error', special.message)
                                     reject()
                                     return;
                                 }
@@ -96,9 +88,7 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                                 const veifyCamp = newData[noRepeat.camp]
                                 if (veifyCamp !== oldData[noRepeat.camp]) {
                                     if (noRepeat.list.find(value => value === veifyCamp)) {
-                                        setDialogTitle('ERROR')
-                                        setDialogText(noRepeat.message)
-                                        setDialogOpen(true)
+                                        openDialog('Error', noRepeat.message)
                                         reject()
                                         return
                                     }
@@ -106,9 +96,7 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                             }
                             if (special) {
                                 if (special.func(newData, false, oldData)) {
-                                    setDialogTitle('ERROR')
-                                    setDialogText(special.message)
-                                    setDialogOpen(true)
+                                    openDialog('Error', special.message)
                                     reject()
                                     return;
                                 }
@@ -118,9 +106,7 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                                     return true
                                 }
                             })) {
-                                setDialogTitle('ERROR')
-                                setDialogText('Campos nulos')
-                                setDialogOpen(true)
+                                openDialog('Error', 'Campos nulos')
                                 reject()
                                 return;
                             }
@@ -135,9 +121,7 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                         setTimeout(() => {
                             if (special) {
                                 if (special.func(oldData, true, false)) {
-                                    setDialogTitle('ERROR')
-                                    setDialogText('Esta linha não pode ser apagada')
-                                    setDialogOpen(true)
+                                    openDialog('Error', 'Esta linha não pode ser apagada')
                                     reject()
                                     return;
                                 }
@@ -152,8 +136,8 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                     onRowAddCancelled: () => new Promise<any>(resolve => setTimeout(() => resolve(), 1000)),
                     onRowUpdateCancelled: () => new Promise<any>(resolve => setTimeout(() => resolve(), 1000)),
                 }}
-                    />
-                    <Dialog text={dialogText} title={dialogTitle} open={dialogOpen} setOpen={setDialogOpen}/>
-                    </div>
-                    )
-                    }
+            />
+            <Dialog text={dialogText} title={dialogTitle} open={dialogOpen} setOpen={setDialogOpen}/>
+        </div>
+    )
+}

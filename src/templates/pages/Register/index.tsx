@@ -30,27 +30,24 @@ export default () => {
         setRedirectRender(true)
     }
 
-    const onSubmit = ({name, username, password, password_confirm}: RegisterInputsInterface) => {
+    function openDialog(title: string, text: string) {
+        setDialogTitle(title)
+        setDialogText(text)
+        setDialogOpen(true)
+    }
+
+    function onSubmit({name, username, password, password_confirm}: RegisterInputsInterface) {
         if (password !== password_confirm) {
-            setDialogTitle("Error")
-            setDialogText("As senhas não correspondem")
-            setDialogOpen(true)
+            openDialog('Error', 'As senhas não correspondem')
         } else {
             const {users} = userController.index()
             if (users.find(value => value.username === username)) {
-                setDialogTitle("Error")
-                setDialogText("Já existe um usuário com esse username")
-                setDialogOpen(true)
+                openDialog('Error', 'Já existe um usuário com esse username')
             } else {
                 const parsePassword = passwordHelper.encrypt(password)
                 userController.create(name, username, parsePassword)
-                setDialogTitle("Ok")
-                setDialogText("Seu usuário foi cadastrado com sucesso")
-                setDialogOpen(true)
-                setTimeout(() => {
-                    setRedirectPath('/')
-                    setRedirectRender(true)
-                }, 3000)
+                openDialog('OK', 'seu usuário foi cadastrado com sucesso')
+                setTimeout(() => redirect('/'), 3000)
             }
         }
     }

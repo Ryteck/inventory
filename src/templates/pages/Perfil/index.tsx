@@ -21,6 +21,8 @@ export default () => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>('');
     const [dialogText, setDialogText] = useState<string>('');
+    const [name, setName] = useState<string>('')
+    const [username, setUsername] = useState<string>('')
 
     const {register, handleSubmit, errors, getValues} = useForm<PerfilInputsInterface>()
 
@@ -29,25 +31,24 @@ export default () => {
         setRedirectRender(true)
     }
 
-    const [name, setName] = useState<string>('')
-    const [username, setUsername] = useState<string>('')
+    function openDialog(title: string, text: string) {
+        setDialogTitle(title)
+        setDialogText(text)
+        setDialogOpen(true)
+    }
 
-    const onSubmit = ({name, username, password_new, password_new_confirm, password_old}: PerfilInputsInterface) => {
+    function onSubmit({name, username, password_new, password_new_confirm, password_old}: PerfilInputsInterface) {
         let changePassword = false;
         if (password_new) {
             if (password_new_confirm) {
                 if (password_new === password_new_confirm) {
                     changePassword = true
                 } else {
-                    setDialogTitle('Error')
-                    setDialogText('As senhas não conferem')
-                    setDialogOpen(true)
+                    openDialog('Error', 'As senhas não conferem')
                     return
                 }
             } else {
-                setDialogTitle('Error')
-                setDialogText('A nova senha não foi confirmada')
-                setDialogOpen(true)
+                openDialog('Error', 'A nova senha não foi confirmada')
                 return
             }
         }
@@ -62,46 +63,34 @@ export default () => {
                 }
                 sessionStorage.setItem('name', name)
                 sessionStorage.setItem('username', username)
-                setDialogTitle('OK')
-                setDialogText('este usuário foi alterado')
-                setDialogOpen(true)
-                setTimeout(() => {
-                    redirect('/home')
-                }, 3000)
+                openDialog('OK', 'Este usuário foi alterado')
+                setTimeout(() => redirect('/home'), 3000)
                 userController.update(id, name, username, passwordTarget as string)
             } else {
-                setDialogTitle('Error')
-                setDialogText('a senha digitada está errada')
-                setDialogOpen(true)
+                openDialog('Error', 'A senha digitada esta errada')
                 return
             }
         } else {
-            setDialogTitle('Error')
-            setDialogText('usuário não encontrado')
-            setDialogOpen(true)
+            openDialog('Error', 'Usuário não encontrado')
             return
         }
     }
 
-    const onReset = () => {
+    function onReset() {
         setName(sessionStorage.getItem('name') as string)
         setUsername(sessionStorage.getItem('username') as string)
     }
 
-    const onDelete = () => {
+    function onDelete() {
         const {password_new, password_new_confirm, password_old} = getValues()
 
         if (!(password_new && password_new_confirm && password_old)) {
-            setDialogTitle('Error')
-            setDialogText('Para apagar preencha todos os valores de senha com a sua senha correta')
-            setDialogOpen(true)
+            openDialog('Error', 'Para apagar preencha todos os valores de senha com a sua senha correta')
             return
         }
 
         if (password_old !== password_new && password_old !== password_new_confirm) {
-            setDialogTitle('Error')
-            setDialogText('As senhas não conferem')
-            setDialogOpen(true)
+            openDialog('Error', 'As senhas não conferem')
             return
         }
 
@@ -112,20 +101,14 @@ export default () => {
             if (passwordHelper.compare(password_old, password_current as string)) {
                 userController.destroy(id)
                 sessionStorage.clear()
-                setDialogTitle('Ok')
-                setDialogText('seu usuário foi apagado, bye bye')
-                setDialogOpen(true)
-                setTimeout(() => redirect('/'), 3000)
+                openDialog('Ok', 'Seu usuário foi apagado, bye bye')
+                setTimeout(() => redirect('/'), 5000)
             } else {
-                setDialogTitle('Error')
-                setDialogText('as senhas digitadas estão erradas')
-                setDialogOpen(true)
+                openDialog('Error', 'As senhas digitadas estão erradas')
                 return
             }
         } else {
-            setDialogTitle('Error')
-            setDialogText('usuário não pode ser apagado')
-            setDialogOpen(true)
+            openDialog('Error', 'Usuário não pode ser apagado')
         }
     }
 

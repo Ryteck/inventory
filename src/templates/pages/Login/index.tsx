@@ -27,6 +27,12 @@ export default () => {
         setRedirectRender(true)
     }
 
+    function openDialog(title: string, text: string) {
+        setDialogTitle(title)
+        setDialogText(text)
+        setDialogOpen(true)
+    }
+
     function onSubmit({username, password}: LoginInputsInterface) {
         const {users} = userController.index()
         const notDisableUsers = users.filter(value => !(value.disable))
@@ -41,14 +47,10 @@ export default () => {
                 sessionStorage.setItem('username', username as string)
                 redirect('/home')
             } else {
-                setDialogTitle("Error")
-                setDialogText("Senha incorreta")
-                setDialogOpen(true)
+                openDialog('Error', 'Senha incorreta')
             }
         } else {
-            setDialogTitle("Error")
-            setDialogText("Usuário não encontrado")
-            setDialogOpen(true)
+            openDialog('Error', 'Usuário não encontrado')
         }
     }
 

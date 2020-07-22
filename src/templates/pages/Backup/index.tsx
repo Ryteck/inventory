@@ -29,7 +29,13 @@ export default () => {
         setRedirectRender(true)
     }
 
-    const download = () => {
+    function openDialog(title: string, text: string) {
+        setDialogTitle(title)
+        setDialogText(text)
+        setDialogOpen(true)
+    }
+
+    function download() {
         const itemsFile = jsonConvert.toJSON(dataManager.read(files[2].path) as string)
         const inputsFile = jsonConvert.toJSON(dataManager.read(files[3].path) as string)
         const outputsFile = jsonConvert.toJSON(dataManager.read(files[4].path) as string)
@@ -42,21 +48,15 @@ export default () => {
     const onDrop = useCallback(acceptedFiles => {
         const reader = new FileReader()
         reader.readAsText(acceptedFiles[0])
-        reader.onload = function() {
+        reader.onload = function () {
             const {itemsFile, inputsFile, outputsFile} = jsonConvert.toJSON(String(reader.result)) as BackupFileInterface
             dataManager.write(files[2].path, jsonConvert.toString(itemsFile))
             dataManager.write(files[3].path, jsonConvert.toString(inputsFile))
             dataManager.write(files[4].path, jsonConvert.toString(outputsFile))
-            setDialogTitle('OK')
-            setDialogText('Cadastro realizado com sucesso')
-            setDialogOpen(true)
+            openDialog('OK', 'Os novos dados foram carregados')
             setTimeout(() => redirect('/home'), 3000)
         };
-        reader.onerror = function() {
-            setDialogTitle('Error')
-            setDialogText(String(reader.error))
-            setDialogOpen(true)
-        };
+        reader.onerror = () => openDialog('Error', String(reader.error))
     }, []);
 
     const {getInputProps, open} = useDropzone({

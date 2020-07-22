@@ -68,49 +68,55 @@ export default () => {
 
     function minimal(data: DataMinumalFunctionInterface, del: boolean, upd: DataMinumalFunctionInterface): boolean {
         const {saida, what} = data
+
         if (saida < 1) {
             return true
         }
+
         const {items} = jsonConvert.toJSON(dataManager.read(itemsPath) as string) as InventoryJsonInterface
-        const item = items.find(value => {
-            const {id} = value
-            if (String(id) === what) {
-                return true
-            }
-        })
+
+        const item = items.find(value => (String(value.id) === what))
+
         if (item) {
-            const {saida: oldSaida} = upd
-            const {quantity} = item
-            if (upd) {
-                if (quantity - (saida-oldSaida) < 0) {
-                    return true
-                }
-            } else {
-                if (quantity - saida < 0) {
-                    return true
-                }
-            }
-            if (upd) {
-                const newItems = items.map(value => {
+            let newItems = {};
+            if (del) {
+                newItems = items.map(value => {
+                    const {id, quantity} = value
                     let obj = value
-                    if (String(value.id) === what) {
-                        const {quantity} = value
-                        obj = {...value, quantity: quantity - (saida-oldSaida)}
+                    if (String(id) === what) {
+                        obj = {...value, quantity: quantity + saida}
                     }
                     return obj
                 })
-                dataManager.write(itemsPath, jsonConvert.toString({items: newItems}))
-                return false
-            }
-            const newItems = items.map(value => {
-                let obj = value
-                if (String(value.id) === what) {
-                    const {quantity} = value
-                    obj = {...value, quantity: quantity - saida}
+            } else if (upd) {
+                const {saida: oldSaida} = upd
+                if (item.quantity - (saida - oldSaida) < 0) {
+                    return true
                 }
-                return obj
-            })
+                newItems = items.map(value => {
+                    const {id, quantity} = value
+                    let obj = value
+                    if (String(id) === what) {
+                        obj = {...value, quantity: quantity - (saida - oldSaida)}
+                    }
+                    return obj
+                })
+            } else {
+                if (item.quantity - saida < 0) {
+                    return true
+                }
+                newItems = items.map(value => {
+                    const {id, quantity} = value
+                    let obj = value
+                    if (String(id) === what) {
+                        obj = {...value, quantity: quantity - saida}
+                    }
+                    return obj
+                })
+            }
             dataManager.write(itemsPath, jsonConvert.toString({items: newItems}))
+        } else {
+            return true
         }
         return false
     }

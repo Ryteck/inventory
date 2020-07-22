@@ -27,7 +27,7 @@ const {path} = files[3]
 const {path: itemsPath} = files[2]
 
 export default () => {
-    const getAllItems = (): object => {
+    const getAllItemsLookup = (): object => {
         const {items} = jsonConvert.toJSON(dataManager.read(itemsPath) as string) as InventoryJsonInterface
         const dinamic: any = {};
         items.map(item => {
@@ -47,7 +47,7 @@ export default () => {
             initialEditValue: new Date()
         },
         {title: 'Entrada', field: 'entrada', type: 'numeric', align: 'center'},
-        {title: 'O que foi colocado', field: 'what', type: 'string', lookup: getAllItems()},
+        {title: 'O que foi colocado', field: 'what', type: 'string', lookup: getAllItemsLookup()},
         {
             title: 'Quem colocou',
             field: 'who',
@@ -66,45 +66,57 @@ export default () => {
         loadElements()
     }
 
-    function minimal(data: DataMinumalFunctionInterface, del:boolean): boolean {
+    function minimal(data: DataMinumalFunctionInterface, del: boolean, upd: DataMinumalFunctionInterface): boolean {
         const {entrada, what} = data
-        if (entrada < 1){
+
+        if (entrada < 1) {
             return true
         }
+
         const {items} = jsonConvert.toJSON(dataManager.read(itemsPath) as string) as InventoryJsonInterface
-        const item = items.find(value => {
-            const {id} = value
-            if (String(id) === what){
-                return true
-            }
-        })
-        if (item){
-            if (del){
-                if(item.quantity - entrada < 0){
+
+        const item = items.find(value => (String(value.id) === what))
+
+        if (item) {
+            let newItems = {};
+            if (del) {
+                if (item.quantity - entrada < 0) {
                     return true
                 }
-                const newItems = items.map(value => {
+                newItems = items.map(value => {
+                    const {id, quantity} = value
                     let obj = value
-                    if (String(value.id) === what){
-                        const {quantity} = value
-                        obj = {...value, quantity: quantity-entrada}
+                    if (String(id) === what) {
+                        obj = {...value, quantity: quantity - entrada}
                     }
                     return obj
                 })
-                dataManager.write(itemsPath, jsonConvert.toString({items: newItems}))
-                return false
-            }
-            const newItems = items.map(value => {
-                let obj = value
-                if (String(value.id) === what){
-                    const {quantity} = value
-                    obj = {...value, quantity: quantity+entrada}
+            } else if (upd) {
+                const {entrada: oldEntrada} = upd
+                if (item.quantity - (oldEntrada - entrada) < 0) {
+                    return true
                 }
-                return obj
-            })
+                newItems = items.map(value => {
+                    const {id, quantity} = value
+                    let obj = value
+                    if (String(id) === what) {
+                        obj = {...value, quantity: quantity - (oldEntrada - entrada)}
+                    }
+                    return obj
+                })
+            } else {
+                newItems = items.map(value => {
+                    const {id, quantity} = value
+                    let obj = value
+                    if (String(id) === what) {
+                        obj = {...value, quantity: quantity + entrada}
+                    }
+                    return obj
+                })
+            }
             dataManager.write(itemsPath, jsonConvert.toString({items: newItems}))
-        }else{
-            return true;
+        } else {
+            return true
         }
         return false
     }
@@ -132,7 +144,8 @@ export default () => {
             </header>
             <div className='space'/>
             <main>
-                <Table title='Entrada' collumns={collumns} data={tableData} save={save} requiredFields={['entrada', 'what']} special={{func: minimal, message: 'Valor < 1'}}/>
+                <Table title='Entrada' collumns={collumns} data={tableData} save={save}
+                       requiredFields={['entrada', 'what']} special={{func: minimal, message: 'Valor < 1'}}/>
             </main>
         </div>
     )

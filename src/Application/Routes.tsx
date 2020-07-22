@@ -1,6 +1,5 @@
 import React from 'react';
 import {HashRouter, Switch, Route} from 'react-router-dom'
-
 import Login from './../templates/pages/Login'
 import Register from './../templates/pages/Register'
 import Home from './../templates/pages/Home'

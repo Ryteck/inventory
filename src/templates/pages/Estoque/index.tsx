@@ -29,16 +29,8 @@ export default () => {
     const indexEntradas = (): InputJsonInterface => (jsonConvert.toJSON(dataManager.read(pathEntradas) as string) as InputJsonInterface)
     const indexSaidas = (): OutputJsonInterface => (jsonConvert.toJSON(dataManager.read(pathSaidas) as string) as OutputJsonInterface)
 
-    const getNextId = (): number => {
-        const {items} = index()
-        if (!items.length) {
-            return 0
-        } else {
-            const ids = items.map(value => value.id)
-            const max = ids.reduce((previousValue, currentValue) => Math.max(previousValue, currentValue))
-            return max + 1
-        }
-    }
+    const [tableData, setTableData] = useState<Array<EstoqueTableInterface>>([])
+    const [noRepeatNameList, setNoRepeatNameList] = useState<Array<string>>([])
 
     const collumns: Column<EstoqueTableInterface>[] = [
         {title: 'id', field: 'id', type: 'numeric', align: 'center', editable: 'never', initialEditValue: getNextId()},
@@ -71,8 +63,16 @@ export default () => {
         }
     ]
 
-    const [tableData, setTableData] = useState<Array<EstoqueTableInterface>>([])
-    const [noRepeatNameList, setNoRepeatNameList] = useState<Array<string>>([])
+    function getNextId(): number {
+        const {items} = index()
+        if (!items.length) {
+            return 0
+        } else {
+            const ids = items.map(value => value.id)
+            const max = ids.reduce((previousValue, currentValue) => Math.max(previousValue, currentValue))
+            return max + 1
+        }
+    }
 
     function save(data: [EstoqueTableInterface]) {
         setTableData(data)

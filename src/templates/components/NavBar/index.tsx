@@ -1,9 +1,7 @@
 import React, {useState} from "react";
 import './style.css'
 import Redirect from './../Redirect';
-
 import tokenHelper from "../../../helpers/token";
-
 import TranslateTokenInterface from "../../../interfaces/translateTokenInterface";
 import TokenInterface from "../../../interfaces/tokenInterface";
 
@@ -17,10 +15,8 @@ interface NavBarPropsInterface {
 }
 
 export default ({home, estoque, entrada, saida, perfil, backup}: NavBarPropsInterface) => {
-    function classActivate(validator?: boolean): string {
-        if (validator) return 'activate'
-        else return ''
-    }
+    const [redirectRender, setRedirectRender] = useState<boolean>(false);
+    const [redirectPath, setRedirectPath] = useState<string>('');
 
     const homeClass = classActivate(home)
     const estoqueClass = classActivate(estoque)
@@ -29,8 +25,10 @@ export default ({home, estoque, entrada, saida, perfil, backup}: NavBarPropsInte
     const perfilClass = classActivate(perfil)
     const backupClass = classActivate(backup)
 
-    const [redirectRender, setRedirectRender] = useState<boolean>(false);
-    const [redirectPath, setRedirectPath] = useState<string>('');
+    function classActivate(validator?: boolean): string {
+        if (validator) return 'activate'
+        else return ''
+    }
 
     function redirect(path: string) {
         setRedirectPath(path)
@@ -54,7 +52,7 @@ export default ({home, estoque, entrada, saida, perfil, backup}: NavBarPropsInte
                 logout()
             } else {
                 const data = translateToken.data as TokenInterface
-                if (data.secret.id.toString() !== id){
+                if (data.secret.id.toString() !== id) {
                     logout()
                 }
             }
