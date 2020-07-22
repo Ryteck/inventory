@@ -4,5 +4,6 @@ export default interface InventoryJsonInterface {
         name: string,
         userId: number,
         when: string,
+        quantity: number
     }]
 }

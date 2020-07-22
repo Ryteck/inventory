@@ -11,7 +11,7 @@ const exists = (path: string, isDir?: boolean, name?: string) => {
             fs.mkdirSync(parsePath)
         } else {
             const data = `{"${name}":[]}`
-            write(parsePath, data);
+            write(path, data);
         }
     }
 }

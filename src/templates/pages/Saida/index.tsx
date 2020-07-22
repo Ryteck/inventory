@@ -1,41 +1,109 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Column} from "material-table";
-
 import './style.css';
-
 import NavBar from './../../components/NavBar'
 import Table from "../../components/Table";
+import dataManager from "../../../services/dataManager";
+import jsonConvert from "../../../helpers/jsonConvert";
+import OutputJsonInterface from "../../../interfaces/outputJsonInterface";
+import userController from "../../../controllers/userController";
+import files from "../../../settings/files.json";
+import InventoryJsonInterface from "../../../interfaces/inventoryJsonInterface";
 
-interface EstoqueTableInterface {
-    id: number,
-    name: string,
-    quantity: number,
+interface SaidaTableInterface {
+    id: Date,
+    saida: number,
+    what: string,
     who: string,
-    when: string
+    userId: number
 }
 
+interface DataMinumalFunctionInterface {
+    what: string,
+    saida: number
+}
+
+const {path} = files[4]
+const {path: itemsPath} = files[2]
+
 export default () => {
-    const collumns: Column<any>[] = [
-        {title: 'ID', field: 'id', type: 'numeric', align: 'center'},
-        {title: 'NOME', field: 'name', type: 'string', align: 'center'},
-        {title: 'QUANTIDADE', field: 'quantity', type: 'numeric', align: 'center'},
-        {title: 'Quem criou?', field: 'who', type: 'string', align: 'center'},
-        {title: 'Quando criou?', field: 'when', type: 'datetime', align: 'center'},
+    const getAllItems = (): object => {
+        const {items} = jsonConvert.toJSON(dataManager.read(itemsPath) as string) as InventoryJsonInterface
+        const dinamic: any = {};
+        items.map(item => {
+            const {id, name} = item
+            dinamic[id] = `${id} - ${name}`
+        })
+        return dinamic
+    }
+
+    const collumns: Column<SaidaTableInterface>[] = [
+        {title: 'id - quando foi retirado', field: 'id', type: 'datetime', align: 'center', editable: 'never', initialEditValue: new Date()},
+        {title: 'Saida', field: 'saida', type: 'numeric', align: 'center'},
+        {title: 'O que foi retirado', field: 'what', type: 'string', lookup: getAllItems()},
+        {title: 'Quem retirou', field: 'who', type: 'string', align: 'center', editable: 'never', initialEditValue: sessionStorage.getItem('name')}
     ]
 
-    const [tableData, setTableData] = useState<Array<EstoqueTableInterface>>([])
+    const [tableData, setTableData] = useState<Array<SaidaTableInterface>>([])
 
-    function save(data: [EstoqueTableInterface]) {
+    function save(data: [SaidaTableInterface]) {
         setTableData(data)
+        dataManager.write(path, jsonConvert.toString({outputs: data}))
+        loadElements()
     }
+
+    function minimal(data: DataMinumalFunctionInterface): boolean {
+        const {saida, what} = data
+        const {items} = jsonConvert.toJSON(dataManager.read(itemsPath) as string) as InventoryJsonInterface
+        const item = items.find(value => {
+            const {id} = value
+            if (String(id) === what){
+                return true
+            }
+        })
+        if (item){
+            const {quantity} = item
+            if (quantity - saida < 0){
+                return true
+            }
+            const newItems = items.map(value => {
+                let obj = value
+                if (String(value.id) === what){
+                    const {quantity} = value
+                    obj = {...value, quantity: quantity-saida}
+                }
+                return obj
+            })
+            dataManager.write(itemsPath, jsonConvert.toString({items: newItems}))
+        }
+        return false
+    }
+
+
+    const loadElements = () => {
+        const {outputs} = jsonConvert.toJSON(dataManager.read(path) as string) as OutputJsonInterface
+        const formatedData = outputs.map(value => {
+            const {id, saida, what, userId} = value
+            const user = userController.show(userId)
+            let who = 'erro'
+            if (user){
+                who = user.name
+            }
+            return {id: new Date(id), saida, what, userId, who}
+        })
+        setTableData(formatedData)
+    }
+
+    useEffect(() => loadElements(), []);
 
     return (
         <div className='saida'>
             <header>
                 <NavBar saida/>
             </header>
+            <div className='space'/>
             <main>
-                <Table title='Saída' collumns={collumns} data={tableData} save={save}/>
+                <Table title='Saída' collumns={collumns} data={tableData} save={save} requiredFields={['saida', 'what']} special={{func: minimal, message: "o item vai ficar negativo"}}/>
             </main>
         </div>
     )

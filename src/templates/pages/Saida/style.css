@@ -3,12 +3,16 @@
     width: 100%;
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 10vh 90vh;
-    grid-template-areas: "header" "main";
+    grid-template-rows: 10vh 10vh 80vh;
+    grid-template-areas: "header" "space" "main";
 }
 
 .saida header {
     grid-area: header;
+}
+
+.saida .space {
+    grid-area: space;
 }
 
 .saida main {

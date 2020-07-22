@@ -6,6 +6,10 @@ interface FunctionSaveDataInterface {
     (data: any): void
 }
 
+interface SpecialFunctionInterface {
+    (data: any): boolean
+}
+
 interface TablePropsInterface {
     title: string,
     collumns: Column<any>[],
@@ -16,9 +20,14 @@ interface TablePropsInterface {
         list: Array<any>,
         message: string
     }
+    requiredFields?: Array<string>,
+    special?: {
+        func: SpecialFunctionInterface,
+        message: string
+    }
 }
 
-export default ({title, collumns, data, save, noRepeat}: TablePropsInterface) => {
+export default ({title, collumns, data, save, noRepeat, requiredFields, special}: TablePropsInterface) => {
     const [selectedRow, setSelectedRow] = useState<number | null>(null);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [dialogTitle, setDialogTitle] = useState<string>('');
@@ -56,6 +65,26 @@ export default ({title, collumns, data, save, noRepeat}: TablePropsInterface) =>
                                     return
                                 }
                             }
+                            if (requiredFields?.find(value => {
+                                if (newData[value] === undefined){
+                                    return true
+                                }
+                            })) {
+                                setDialogTitle('ERROR')
+                                setDialogText('Campos nulos')
+                                setDialogOpen(true)
+                                reject()
+                                return;
+                            }
+                            if (special) {
+                                if (special.func(newData)){
+                                    setDialogTitle('ERROR')
+                                    setDialogText(special.message)
+                                    setDialogOpen(true)
+                                    reject()
+                                    return;
+                                }
+                            }
                             newData.userId = Number(sessionStorage.getItem('id'))
                             save([...data, newData]);
                             resolve();
@@ -74,6 +103,26 @@ export default ({title, collumns, data, save, noRepeat}: TablePropsInterface) =>
                                         return
                                     }
                                 }
+                            }
+                            if (special) {
+                                if (special.func(newData)){
+                                    setDialogTitle('ERROR')
+                                    setDialogText(special.message)
+                                    setDialogOpen(true)
+                                    reject()
+                                    return;
+                                }
+                            }
+                            if (requiredFields?.find(value => {
+                                if (newData[value] === undefined){
+                                    return true
+                                }
+                            })) {
+                                setDialogTitle('ERROR')
+                                setDialogText('Campos nulos')
+                                setDialogOpen(true)
+                                reject()
+                                return;
                             }
                             const dataUpdate = [...data];
                             const index = oldData.tableData.id;
@@ -94,8 +143,8 @@ export default ({title, collumns, data, save, noRepeat}: TablePropsInterface) =>
                     onRowAddCancelled: () => new Promise<any>(resolve => setTimeout(() => resolve(), 1000)),
                     onRowUpdateCancelled: () => new Promise<any>(resolve => setTimeout(() => resolve(), 1000)),
                 }}
-                    />
-                    <Dialog text={dialogText}  title={dialogTitle} open={dialogOpen} setOpen={setDialogOpen}/>
-                    </div>
-                    )
-                    }
+            />
+            <Dialog text={dialogText} title={dialogTitle} open={dialogOpen} setOpen={setDialogOpen}/>
+        </div>
+    )
+}

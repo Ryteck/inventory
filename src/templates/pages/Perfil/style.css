@@ -3,14 +3,92 @@
     width: 100%;
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 10vh 90vh;
-    grid-template-areas: "header" "main";
+    grid-template-rows: 10vh 10vh 80vh;
+    grid-template-areas: "header" "space" "main";
 }
 
 .perfil header {
     grid-area: header;
 }
 
+.estoque .space {
+    grid-area: space;
+}
+
 .perfil main {
     grid-area: main;
+}
+
+.perfil .box {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.perfil .box h1 {
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.perfil .box input {
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid;
+    padding: 14px 40px;
+    outline: none;
+    color: #ffffff;
+    border-radius: 24px;
+    transition: 0.25s;
+}
+
+.perfil .box input[type = 'text'], .perfil .box input[type = 'password']{
+    border-color: #8344ad;
+    width: 200px;
+    box-shadow: 0 0 5px 2px #8344ad,
+    inset 0 0 5px 2px #8344ad;
+}
+
+.perfil .box input[type = 'text']:focus, .perfil .box input[type = 'password']:focus{
+    border-color: #e84393;
+    width: 240px;
+    box-shadow: 0 0 100px 2px #e84393,
+    inset 0 0 5px 2px #e84393;
+}
+
+.perfil .box input[type = 'submit'] {
+    border-color: #2ecc71;
+    width: 180px;
+    cursor: pointer;
+    box-shadow: 0 0 5px 2px #2ecc71,
+    inset 0 0 5px 2px #2ecc71;
+}
+
+.perfil .box input[type = 'submit']:hover {
+    background-color: #2ecc71;
+    box-shadow: 0 0 100px 2px #2ecc71,
+    inset 0 0 5px 2px #2ecc71;
+}
+
+.perfil .box input[type = 'reset'] {
+    border-color: #f39c12;
+    width: 180px;
+    cursor: pointer;
+    box-shadow: 0 0 5px 2px #f39c12,
+    inset 0 0 5px 2px #f39c12;
+}
+
+.perfil .box input[type = 'reset']:hover {
+    background-color: #f39c12;
+    box-shadow: 0 0 100px 2px #f39c12,
+    inset 0 0 5px 2px #f39c12;
+}
+
+.perfil span {
+    display: block;
+    color: #ff4757;
 }
