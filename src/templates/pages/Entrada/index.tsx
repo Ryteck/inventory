@@ -66,8 +66,11 @@ export default () => {
         loadElements()
     }
 
-    function minimal(data: DataMinumalFunctionInterface): boolean {
+    function minimal(data: DataMinumalFunctionInterface, del:boolean): boolean {
         const {entrada, what} = data
+        if (entrada < 1){
+            return true
+        }
         const {items} = jsonConvert.toJSON(dataManager.read(itemsPath) as string) as InventoryJsonInterface
         const item = items.find(value => {
             const {id} = value
@@ -76,6 +79,21 @@ export default () => {
             }
         })
         if (item){
+            if (del){
+                if(item.quantity - entrada < 0){
+                    return true
+                }
+                const newItems = items.map(value => {
+                    let obj = value
+                    if (String(value.id) === what){
+                        const {quantity} = value
+                        obj = {...value, quantity: quantity-entrada}
+                    }
+                    return obj
+                })
+                dataManager.write(itemsPath, jsonConvert.toString({items: newItems}))
+                return false
+            }
             const newItems = items.map(value => {
                 let obj = value
                 if (String(value.id) === what){
@@ -114,7 +132,7 @@ export default () => {
             </header>
             <div className='space'/>
             <main>
-                <Table title='Entrada' collumns={collumns} data={tableData} save={save} requiredFields={['entrada', 'what']} special={{func: minimal, message: 'Erro desconhecido'}}/>
+                <Table title='Entrada' collumns={collumns} data={tableData} save={save} requiredFields={['entrada', 'what']} special={{func: minimal, message: 'Valor < 1'}}/>
             </main>
         </div>
     )

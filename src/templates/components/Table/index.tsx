@@ -7,7 +7,7 @@ interface FunctionSaveDataInterface {
 }
 
 interface SpecialFunctionInterface {
-    (data: any): boolean
+    (data: any, del: boolean, upd: any): boolean
 }
 
 interface TablePropsInterface {
@@ -66,7 +66,7 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                                 }
                             }
                             if (requiredFields?.find(value => {
-                                if (newData[value] === undefined){
+                                if (newData[value] === undefined) {
                                     return true
                                 }
                             })) {
@@ -77,7 +77,7 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                                 return;
                             }
                             if (special) {
-                                if (special.func(newData)){
+                                if (special.func(newData, false, false)) {
                                     setDialogTitle('ERROR')
                                     setDialogText(special.message)
                                     setDialogOpen(true)
@@ -105,7 +105,7 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                                 }
                             }
                             if (special) {
-                                if (special.func(newData)){
+                                if (special.func(newData, false, oldData)) {
                                     setDialogTitle('ERROR')
                                     setDialogText(special.message)
                                     setDialogOpen(true)
@@ -114,7 +114,7 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                                 }
                             }
                             if (requiredFields?.find(value => {
-                                if (newData[value] === undefined){
+                                if (newData[value] === undefined) {
                                     return true
                                 }
                             })) {
@@ -131,8 +131,17 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                             resolve();
                         }, 1000);
                     }),
-                    onRowDelete: oldData => new Promise<any>(resolve => {
+                    onRowDelete: oldData => new Promise<any>((resolve, reject) => {
                         setTimeout(() => {
+                            if (special) {
+                                if (special.func(oldData, true, false)) {
+                                    setDialogTitle('ERROR')
+                                    setDialogText('Esta linha não pode ser apagada')
+                                    setDialogOpen(true)
+                                    reject()
+                                    return;
+                                }
+                            }
                             const dataDelete = [...data];
                             const index = oldData.tableData.id;
                             dataDelete.splice(index, 1);
@@ -143,8 +152,8 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                     onRowAddCancelled: () => new Promise<any>(resolve => setTimeout(() => resolve(), 1000)),
                     onRowUpdateCancelled: () => new Promise<any>(resolve => setTimeout(() => resolve(), 1000)),
                 }}
-            />
-            <Dialog text={dialogText} title={dialogTitle} open={dialogOpen} setOpen={setDialogOpen}/>
-        </div>
-    )
-}
+                    />
+                    <Dialog text={dialogText} title={dialogTitle} open={dialogOpen} setOpen={setDialogOpen}/>
+                    </div>
+                    )
+                    }

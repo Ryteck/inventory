@@ -38,10 +38,24 @@ export default () => {
     }
 
     const collumns: Column<SaidaTableInterface>[] = [
-        {title: 'id - quando foi retirado', field: 'id', type: 'datetime', align: 'center', editable: 'never', initialEditValue: new Date()},
+        {
+            title: 'id - quando foi retirado',
+            field: 'id',
+            type: 'datetime',
+            align: 'center',
+            editable: 'never',
+            initialEditValue: new Date()
+        },
         {title: 'Saida', field: 'saida', type: 'numeric', align: 'center'},
         {title: 'O que foi retirado', field: 'what', type: 'string', lookup: getAllItems()},
-        {title: 'Quem retirou', field: 'who', type: 'string', align: 'center', editable: 'never', initialEditValue: sessionStorage.getItem('name')}
+        {
+            title: 'Quem retirou',
+            field: 'who',
+            type: 'string',
+            align: 'center',
+            editable: 'never',
+            initialEditValue: sessionStorage.getItem('name')
+        }
     ]
 
     const [tableData, setTableData] = useState<Array<SaidaTableInterface>>([])
@@ -52,25 +66,47 @@ export default () => {
         loadElements()
     }
 
-    function minimal(data: DataMinumalFunctionInterface): boolean {
+    function minimal(data: DataMinumalFunctionInterface, del: boolean, upd: DataMinumalFunctionInterface): boolean {
         const {saida, what} = data
+        if (saida < 1) {
+            return true
+        }
         const {items} = jsonConvert.toJSON(dataManager.read(itemsPath) as string) as InventoryJsonInterface
         const item = items.find(value => {
             const {id} = value
-            if (String(id) === what){
+            if (String(id) === what) {
                 return true
             }
         })
-        if (item){
+        if (item) {
+            const {saida: oldSaida} = upd
             const {quantity} = item
-            if (quantity - saida < 0){
-                return true
+            if (upd) {
+                if (quantity - (saida-oldSaida) < 0) {
+                    return true
+                }
+            } else {
+                if (quantity - saida < 0) {
+                    return true
+                }
+            }
+            if (upd) {
+                const newItems = items.map(value => {
+                    let obj = value
+                    if (String(value.id) === what) {
+                        const {quantity} = value
+                        obj = {...value, quantity: quantity - (saida-oldSaida)}
+                    }
+                    return obj
+                })
+                dataManager.write(itemsPath, jsonConvert.toString({items: newItems}))
+                return false
             }
             const newItems = items.map(value => {
                 let obj = value
-                if (String(value.id) === what){
+                if (String(value.id) === what) {
                     const {quantity} = value
-                    obj = {...value, quantity: quantity-saida}
+                    obj = {...value, quantity: quantity - saida}
                 }
                 return obj
             })
@@ -86,7 +122,7 @@ export default () => {
             const {id, saida, what, userId} = value
             const user = userController.show(userId)
             let who = 'erro'
-            if (user){
+            if (user) {
                 who = user.name
             }
             return {id: new Date(id), saida, what, userId, who}
@@ -103,7 +139,8 @@ export default () => {
             </header>
             <div className='space'/>
             <main>
-                <Table title='Saída' collumns={collumns} data={tableData} save={save} requiredFields={['saida', 'what']} special={{func: minimal, message: "o item vai ficar negativo"}}/>
+                <Table title='Saída' collumns={collumns} data={tableData} save={save} requiredFields={['saida', 'what']}
+                       special={{func: minimal, message: "o item vai ficar negativo ou o valor é < 1"}}/>
             </main>
         </div>
     )

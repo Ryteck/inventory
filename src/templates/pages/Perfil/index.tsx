@@ -22,7 +22,7 @@ export default () => {
     const [dialogTitle, setDialogTitle] = useState<string>('');
     const [dialogText, setDialogText] = useState<string>('');
 
-    const {register, handleSubmit, errors} = useForm<PerfilInputsInterface>()
+    const {register, handleSubmit, errors, getValues} = useForm<PerfilInputsInterface>()
 
     function redirect(path: string) {
         setRedirectPath(path)
@@ -88,6 +88,47 @@ export default () => {
         setUsername(sessionStorage.getItem('username') as string)
     }
 
+    const onDelete = () => {
+        const {password_new, password_new_confirm, password_old} = getValues()
+
+        if (!(password_new && password_new_confirm && password_old)) {
+            setDialogTitle('Error')
+            setDialogText('Para apagar preencha todos os valores de senha com a sua senha correta')
+            setDialogOpen(true)
+            return
+        }
+
+        if (password_old !== password_new && password_old !== password_new_confirm) {
+            setDialogTitle('Error')
+            setDialogText('As senhas não conferem')
+            setDialogOpen(true)
+            return
+        }
+
+        const id = Number(sessionStorage.getItem('id'))
+        const user = userController.show(id)
+        if (user) {
+            const {password: password_current} = user
+            if (passwordHelper.compare(password_old, password_current as string)) {
+                userController.destroy(id)
+                sessionStorage.clear()
+                setDialogTitle('Ok')
+                setDialogText('seu usuário foi apagado, bye bye')
+                setDialogOpen(true)
+                setTimeout(() => redirect('/'), 3000)
+            } else {
+                setDialogTitle('Error')
+                setDialogText('as senhas digitadas estão erradas')
+                setDialogOpen(true)
+                return
+            }
+        } else {
+            setDialogTitle('Error')
+            setDialogText('usuário não pode ser apagado')
+            setDialogOpen(true)
+        }
+    }
+
     useEffect(() => onReset(), [])
 
     return (
@@ -117,6 +158,9 @@ export default () => {
                         {errors.password_old && <span>O campo "senha" está vazio</span>}
                         <input type='submit' value='Enviar alterações'/>
                         <input type='reset' value='Resetar valores'/>
+                        <input type='button' value='Apagar conta' onClick={() => {
+                            onDelete()
+                        }}/>
                     </form>
                 </div>
             </main>

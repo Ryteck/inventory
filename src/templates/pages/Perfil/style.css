@@ -88,6 +88,20 @@
     inset 0 0 5px 2px #f39c12;
 }
 
+.perfil .box input[type = 'button'] {
+    border-color: #ea2027;
+    width: 180px;
+    cursor: pointer;
+    box-shadow: 0 0 5px 2px #ea2027,
+    inset 0 0 5px 2px #ea2027;
+}
+
+.perfil .box input[type = 'button']:hover {
+    background-color: #ea2027;
+    box-shadow: 0 0 100px 2px #ea2027,
+    inset 0 0 5px 2px #ea2027;
+}
+
 .perfil span {
     display: block;
     color: #ff4757;
