@@ -3,14 +3,37 @@
     width: 100%;
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 10vh 90vh;
-    grid-template-areas: "header" "main";
+    grid-template-rows: 10vh 10vh 10vh;
+    grid-template-areas: "header" "space" "main";
 }
 
 .home header {
     grid-area: header;
 }
 
+.home .space {
+    grid-area: space;
+}
+
 .home main {
     grid-area: main;
+}
+
+.home .box {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.home img {
+    height: 50vh;
+    display: block;
+    margin: 20px auto;
+}
+
+.home label {
+    display: block;
+    margin: 20px auto;
 }
