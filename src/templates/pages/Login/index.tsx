@@ -1,12 +1,9 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form'
-
 import userController from './../../../controllers/userController'
 import passwordHelper from './../../../helpers/password'
 import tokenHelper from './../../../helpers/token'
-
 import './style.css';
-
 import Redirect from "../../components/Redirect";
 import Dialog from "./../../components/Dialog"
 import token from "./../../../helpers/token";
