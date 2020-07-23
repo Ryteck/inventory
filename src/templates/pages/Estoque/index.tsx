@@ -20,6 +20,10 @@ interface EstoqueTableInterface {
     userId: number
 }
 
+interface DataMinumalFunctionInterface {
+    id: number
+}
+
 const {path} = files[2];
 const {path: pathEntradas} = files[3]
 const {path: pathSaidas} = files[4]
@@ -80,6 +84,21 @@ export default () => {
         loadElements()
     }
 
+    const minimun = (data: DataMinumalFunctionInterface, del:boolean): boolean => {
+        if (del){
+            const {id} = data
+            const {inputs} = jsonConvert.toJSON(dataManager.read(pathEntradas) as string) as InputJsonInterface
+            const {outputs} = jsonConvert.toJSON(dataManager.read(pathSaidas) as string) as OutputJsonInterface
+
+            const newInputs = inputs.filter(value => (Number(value.what) !== Number(id)))
+            const newOutputs = outputs.filter(value => (Number(value.what) !== Number(id)))
+
+            dataManager.write(pathEntradas, jsonConvert.toString({inputs: newInputs}))
+            dataManager.write(pathSaidas, jsonConvert.toString({outputs: newOutputs}))
+        }
+        
+        return false
+    }
 
     const loadElements = () => {
         const {items} = index()
@@ -129,7 +148,12 @@ export default () => {
                     message: "Esse nome já esta sendo utilizado.",
                     list: noRepeatNameList,
                     camp: 'name'
-                }} requiredFields={['name']}/>
+                }} requiredFields={['name']}
+                special={{
+                    func: minimun,
+                    message: ''
+                }}
+                />
             </main>
         </div>
     )

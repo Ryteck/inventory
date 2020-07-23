@@ -1,6 +1,6 @@
 {
   "name": "inventory",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Inventory manager created with Typescript, React and Electron",
   "author": "Ryan Gomes Martins",
   "license": "MIT",
