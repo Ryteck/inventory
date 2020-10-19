@@ -43,13 +43,40 @@ export default ({title, collumns, data, save, noRepeat, requiredFields, special}
                     exportButton: true,
                     actionsCellStyle: {
                         textAlign: "center"
-                    }
+                    },
+                exportAllData: true
                 }}
                 onRowClick={(event, rowData) => {
                     if (rowData) {
                         setSelectedRow(rowData.tableData.id)
                     }
                 }}
+				localization={{
+                body: {
+                    emptyDataSourceMessage: 'Nenhum registro para exibir',
+                    addTooltip: 'Adcionar',
+                    deleteTooltip: 'Deletar',
+                    editTooltip: 'Editar'
+                },
+                header: {
+                    actions: 'ações'
+                },
+                pagination: {
+                    labelRowsSelect: 'linhas',
+                    labelDisplayedRows: '{count} de {from}-{to}',
+                    firstTooltip: 'Primeira página',
+                    previousTooltip: 'Página anterior',
+                    nextTooltip: 'Proxima página',
+                    lastTooltip: 'Última página'
+                },
+                toolbar: {
+                    searchTooltip: 'Pesquisar',
+                    searchPlaceholder: 'Pesquisar',
+                    exportTitle: 'exportar',
+                    exportCSVName: 'exportar como CSV',
+                    exportPDFName: 'exportar como PDF'
+                }
+            }}
                 editable={{
                     onRowAdd: newData => new Promise<any>((resolve, reject) => {
                         setTimeout(() => {
