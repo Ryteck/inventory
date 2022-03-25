@@ -30,7 +30,7 @@
     "@types/react-dropzone": "^5.1.0",
     "@types/react-router-dom": "^5.1.5",
     "concurrently": "^5.2.0",
-    "electron": "^9.1.0",
+    "electron": "^13.6.6",
     "electron-builder": "^22.7.0",
     "react-scripts": "3.4.1",
     "typescript": "~3.7.2",
